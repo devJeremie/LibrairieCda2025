@@ -9,13 +9,13 @@ const router = express.Router();
  * Méthode : POST
  * URL : /register
  */
-router.post("/register", (req,res) => {
+router.get("/register", async (req,res) => {
      // Cette fonction sera appelée lorsque la route /register est appelée en méthode POST
     res.send("register");
       // La fonction renvoie simplement la chaîne de caractères "register"
 });
 
-router.post("/login", (req,res) => {
+router.get("/login", async (req,res) => {
     res.send("login");
 });
 
