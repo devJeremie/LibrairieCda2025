@@ -48,7 +48,7 @@ router.post("/register", async (req,res) => {
       } 
 
       //Création avatar aléatoire
-      const profileImage = `https://api.dicebear.com/7.x/aventurier/svg?seed=${username}`;
+      const profileImage = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
 
       //Création nouveau User si tout est ok
       const user = new User({ 
@@ -67,17 +67,58 @@ router.post("/register", async (req,res) => {
           id:user._id,
           username:user.username,
           email: user.email,
-          profileImage: user.profileImage
+          password: user.password,
+          profileImage: user.profileImage,
         },
       })
+      //si ce n'est pas bon alors on aura l'erreur
     } catch (error) {
       console.log("Erreur dans la route register",error);
       res.status(500).json({ message: "Erreur serveur" });
     }
 });
 
+/**
+ * Route pour la connexion d'un utilisateur
+ * Méthode : POST
+ * URL : /login
+ */
 router.post("/login", async (req,res) => {
-    res.send("login");
+    try {
+      // Extraction des données de la requête (email, password) à partir du corps de la requête (req.body)
+      const { email, password } = req.body;
+      // Vérification si les champs obligatoires (email, password) sont présents dans la requête
+      // Si un ou plusieurs champs obligatoires sont manquants, renvoi d'une erreur 400 avec un message d'erreur
+      if (!email || !password) return res.status(400).json({ message: "Tout les champs sont requis"});
+
+      //Vérifie si le user existe
+      const user = await User.findOne({ email });
+      //Si le user n'existe pas, renvoi d'une erreur 400 avec un message d'erreur
+      if (!user) return res.status(400).json({ message: "Ce user n'existe pas"});
+
+      //Vérifie si le mdp est correct
+      const isPasswordCorrect = await user.comparePassword(password);
+      // Si le mot de passe est incorrect, renvoi d'une erreur 400 avec un message d'erreur
+      if (!isPasswordCorrect) return res.status(400).json({ message: "Identifiant invalide"});
+
+      //Génère le token
+      const token = generateToken(user._id);
+      // Renvoi une réponse avec le token et les informations de l'utilisateur
+      res.status(201).json({
+        token,
+        user:{
+          id:user._id,
+          username:user.username,
+          email: user.email,
+          password: user.password,
+          profileImage: user.profileImage,
+        },
+      });
+
+    } catch (error) {
+      console.log("Erreur dans la route login",error);
+      res.status(500).json({ message: "Erreur serveur" });
+    }
 });
 
 export default router;
