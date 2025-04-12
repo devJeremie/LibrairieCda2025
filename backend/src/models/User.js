@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 // Définition du schéma de données pour les utilisateurs
 const userSchema = new mongoose.Schema({
-      // Champ de données "username" et leur types
+    // Champ de données "username" et leur types
     username: {
         type: String,
         required: true,
@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     }
-});
+},{ timestamps: true});
 
 //Hash du password avant sauvegarde en Bdd
 userSchema.pre('save', async function(next) {
