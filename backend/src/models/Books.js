@@ -1,5 +1,6 @@
 import mongoose from "mongoose"; 
 
+//#region SCHEMA LIVRE
 // Création d'un nouveau schéma pour les livres
 const bookSchema = new mongoose.Schema({
     // Titre du livre (obligatoire)
@@ -31,7 +32,7 @@ const bookSchema = new mongoose.Schema({
         required: true,
     }
 }, {timestamps: true});
-
+//#endregion
 const Book = mongoose.model("Book", bookSchema);
 
 export default Book;
