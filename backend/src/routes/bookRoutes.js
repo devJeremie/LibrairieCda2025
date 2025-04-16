@@ -4,7 +4,7 @@ import Book from "../models/Books.js";
 
 // Création d'un objet Router pour gérer les routes de l'application
 const router = express.Router();
-
+//#region  Unlivre
 router.post("/", protectRoute, async (req,res) => {
     try {
         // Récupération des données de la requête (titre, légende, note, image)
@@ -26,7 +26,7 @@ router.post("/", protectRoute, async (req,res) => {
         caption,
         rating,
         image: imageUrl,
-        //user: req.user._id,
+        user: req.user._id,
        });
        // Enregistrement du livre en base de données
        await newBook.save()
@@ -38,6 +38,40 @@ router.post("/", protectRoute, async (req,res) => {
         console.log("Erreur de création du livre", error);
         res.status(500).json({ message: error.message });
     }
+});
+//#endregion
+
+
+
+
+
+
+//#region Tout les livres
+router.get("/", protectRoute, async (req,res) => {
+    try {
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 5;
+        const skip = (page - 1) * limit;
+
+        const books = await Book.find()
+            .sort({ createdAt: -1})
+            .skip(skip)
+            .limit(limit)
+            .populate("user", "username profileImage");
+
+        const totalBooks = await Book.countDocuments();
+
+        res.send({
+            books,
+            currentPage: page,
+            totalBooks,
+            totalPages: Math.ceil(totalBooks / limit),
+        });
+    } catch (error) {
+       console.log("Erreur dans la route pour tout les livres", error);
+       res.status(500).json({ message: "Erreur serveur interne" });
+    }
 })
+//#endregion
 
 export default router;
