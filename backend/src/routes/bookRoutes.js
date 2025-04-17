@@ -47,20 +47,23 @@ router.post("/", protectRoute, async (req,res) => {
 
 
 //#region Tout les livres
+// Route pour récupérer tous les livres
 router.get("/", protectRoute, async (req,res) => {
     try {
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 5;
-        const skip = (page - 1) * limit;
+         // Récupération des paramètres de pagination
+        const page = req.query.page || 1;// Numéro de page par défaut : 1
+        const limit = req.query.limit || 5;// Nombre de livres par page par défaut : 5
+        const skip = (page - 1) * limit; // Calcul du nombre de livres à sauter
 
+        // Recherche des livres dans la base de données
         const books = await Book.find()
-            .sort({ createdAt: -1})
-            .skip(skip)
-            .limit(limit)
-            .populate("user", "username profileImage");
-
+            .sort({ createdAt: -1})// Tri des livres par date de création décroissante
+            .skip(skip)// Saut des livres précédents
+            .limit(limit)// Limite du nombre de livres à récupérer
+            .populate("user", "username profileImage");// Récupération des informations de l'utilisateur
+        // Comptage du nombre total de livres
         const totalBooks = await Book.countDocuments();
-
+         // Envoi de la réponse avec les livres et les informations de pagination
         res.send({
             books,
             currentPage: page,
@@ -68,6 +71,7 @@ router.get("/", protectRoute, async (req,res) => {
             totalPages: Math.ceil(totalBooks / limit),
         });
     } catch (error) {
+        // Gestion des erreurs
        console.log("Erreur dans la route pour tout les livres", error);
        res.status(500).json({ message: "Erreur serveur interne" });
     }
