@@ -49,6 +49,8 @@ router.post("/", protectRoute, async (req,res) => {
 //#region Tout les livres
 // Route pour récupérer tous les livres
 router.get("/", protectRoute, async (req,res) => {
+    //exemple d'appel pour le frontend react native
+    //const response ) await fetch("http://localhost:3000/api/books?page=1&limit=5");
     try {
          // Récupération des paramètres de pagination
         const page = req.query.page || 1;// Numéro de page par défaut : 1
@@ -75,7 +77,49 @@ router.get("/", protectRoute, async (req,res) => {
        console.log("Erreur dans la route pour tout les livres", error);
        res.status(500).json({ message: "Erreur serveur interne" });
     }
-})
+});
 //#endregion
+
+
+
+
+
+
+
+
+//#region Suppression de livre
+// Route pour supprimer un livre
+router.delete("/:id", protectRoute, async (req, res) => {
+    try {
+        // Récupération du livre à supprimer en fonction de son ID
+        const book = await Book.findById(req.params.id); //id etant la wild card
+         // Vérification si le livre existe
+        if (!book) return res.status(404).json({ message: "Le livre n'a pas été trouvé"});
+         // Vérification si l'utilisateur est autorisé à supprimer le livre
+        if (book.user.toString() !== req.user._id.toString())
+            return res.status(401).json({ message: "Pas autorisé"});
+         // Suppression de l'image associée au livre si elle est hébergée sur Cloudinary
+        if (book.image && book.image.includes("cloudinary")) {
+            try {
+                // Récupération de l'ID public de l'image
+                const publicId = book.image.split("/").pop().split(".")[0];
+                // Suppression de l'image sur Cloudinary
+                await cloudinary.uploader.destroy(publicId);
+            } catch (deleteError) {
+                // Gestion de l'erreur en cas de problème lors de la suppression de l'image
+                console.log("Erreur de suppression d'image depuis cloudinary", deleteError)
+            }
+        }
+        // Suppression du livre de la base de données
+        await book.deletOne();
+        // Envoi d'une réponse de succès
+        res.json({ message: "Le livre a été supprimé avec succès" });
+    } catch (error) {
+        // Gestion des erreurs
+        console.log("Erreur de suppression du livre", error);
+        res.status(500).json({ message: "Erreur serveur interne" });
+    }
+});
+
 
 export default router;
