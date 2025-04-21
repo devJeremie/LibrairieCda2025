@@ -1,5 +1,6 @@
 // Importation du framework Express
 import express from "express";
+import cors from "cors";
 import "dotenv/config";
 
 import authRoutes from "./routes/authRoutes.js";
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 // Définition du middleware pour parser les requêtes HTTP en JSON
 app.use(express.json());
+app.use(cors());
 
 //Définition des routes
 app.use("/api/auth", authRoutes);

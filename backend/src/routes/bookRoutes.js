@@ -1,6 +1,7 @@
 import express from "express";
 import cloudinary from "../lib/cloudinary.js";
 import Book from "../models/Books.js";
+import protectRoute from "../middleware/auth.middleware.js"
 
 // Création d'un objet Router pour gérer les routes de l'application
 const router = express.Router();
@@ -86,6 +87,30 @@ router.get("/", protectRoute, async (req,res) => {
 
 
 
+//#region Recommandation des livres sur profil
+// Route pour récupérer les livres d'un utilisateur spécifique
+router.get("/user", protectRoute, async (req, res) => {
+    try {
+        // Recherche des livres de l'utilisateur connecté et tri des livres par date de création décroissante
+        const books = await Book.find({ user: req.user._id}).sort({ createdAt: -1});
+        // Envoi de la réponse avec les livres de l'utilisateur
+        res.json(books);
+    } catch (error) {
+        // Gestion des erreurs
+        console.error("Erreur lors de la récupération des livres de l'utilisateur:", error.message);
+        res.status(500).json({ message: "Erreur serveur"});
+    }
+});
+
+
+//#endregion
+
+
+
+
+
+
+
 
 //#region Suppression de livre
 // Route pour supprimer un livre
@@ -119,6 +144,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
         console.log("Erreur de suppression du livre", error);
         res.status(500).json({ message: "Erreur serveur interne" });
     }
+    //#endregion
 });
 
 
