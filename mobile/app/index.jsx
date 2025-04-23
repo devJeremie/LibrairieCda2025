@@ -1,3 +1,4 @@
+import { Link } from "expo-router";
 import { 
   Text, View,
   StyleSheet, 
@@ -7,6 +8,10 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text style ={styles.title}>Welcome to react native CDA</Text>
+
+      <Link href="/login">Login</Link>
+      <Link href="/login">Signup</Link>
+
     </View>
   );
 }
