@@ -1,6 +1,6 @@
 import { 
   Text, View,
-  StyleSheet,
+  StyleSheet, 
 } from "react-native";
 
 export default function Index() {
