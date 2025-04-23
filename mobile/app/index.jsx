@@ -9,8 +9,8 @@ export default function Index() {
     <View style={styles.container}>
       <Text style ={styles.title}>Welcome to react native CDA</Text>
 
-      <Link href="/login">Login</Link>
-      <Link href="/login">Signup</Link>
+      <Link href="/login">Connexion</Link>
+      <Link href="/login">Inscription</Link>
 
     </View>
   );
