@@ -3,6 +3,8 @@ import {
   Image,TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
  } from 'react-native'
 import { Link } from "expo-router";
 import styles from "../../assets/styles/login.styles";
@@ -25,108 +27,121 @@ export default function Login() {
 
   // Retourne le composant JSX pour la page de connexion
   return (
-    <View style={styles.container}>
-      {/*Image*/}
-      <View>
-        <Image 
-          source={require("../../assets/images/Reading-glasses-bro.png")} 
-          style={styles.illustrationImage} 
-          resizeMode="contain"
-        />
-      </View>
-      <View style={styles.card}>
-        <View style={styles.formContainer}>
-        // #region Email
-        {/*Email*/}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Email</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons
-                name="mail-outline"
-                size={20}
-                color={COLORS.primary}
-                style={styles.inputIcon}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Entrer votre email"
-                placeholderTextColor={COLORS.placeholderText}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType='email-adress'
-                autoCapitalize='none'
-              />
+    //Composant pour éviter que le clavier ne cache le contenu de la page
+    // sur les appareils mobiles
+    <KeyboardAvoidingView
+      // Style pour prendre toute la hauteur de l'écran
+      style={{flex:1}}
+      // Comportement pour gérer l'apparition du clavier
+      // - Sur iOS, ajoute un padding pour décaler le contenu
+      // - Sur Android, modifie la hauteur de la vue pour décaler le contenu
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <View style={styles.container}>
+        {/*Image*/}
+        <View>
+          <Image 
+            source={require("../../assets/images/Reading-glasses-bro.png")} 
+            style={styles.illustrationImage} 
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.card}>
+          <View style={styles.formContainer}>
+            // #region Email
+            {/*Email*/}
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email</Text>
+                <View style={styles.inputContainer}>
+                  <Ionicons
+                    name="mail-outline"
+                    size={20}
+                    color={COLORS.primary}
+                    style={styles.inputIcon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Entrer votre email"
+                    placeholderTextColor={COLORS.placeholderText}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType='email-adress'
+                    autoCapitalize='none'
+                  />
+                </View>
+              </View>
+          
+            // #endregion
+            // #region Password
+            {/*Mot de passe*/}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Mot de passe</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name='lock-closed-outline'
+                  size={20}
+                  color={COLORS.primary}
+                  style={styles.inputIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder='Entrer votre mot de passe'
+                  placeholderTextColor={COLORS.placeholderText}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+                /**
+                * Bouton pour afficher/masquer le mot de passe
+                */
+                <TouchableOpacity
+                /**
+                 * Fonction appelée lors du clic sur le bouton
+                 * Inverse la valeur de showPassword pour afficher ou masquer le mot de passe
+                 */
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  /**
+                  * Icone pour afficher/masquer le mot de passe
+                  * Utilise l'icone "eye-outline" si le mot de passe est visible, "eye-off-outline" sinon
+                  */
+                  <Ionicons
+                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </View>
-        // #endregion
-        // #region Password
-        {/*Mot de passe*/}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Mot de passe</Text>
-          <View style={styles.inputContainer}>
-            <Ionicons
-              name='lock-closed-outline'
-              size={20}
-              color={COLORS.primary}
-              style={styles.inputIcon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder='Entrer votre mot de passe'
-              placeholderTextColor={COLORS.placeholderText}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-            />
-            /**
-            * Bouton pour afficher/masquer le mot de passe
-            */
-            <TouchableOpacity
-             /**
-             * Fonction appelée lors du clic sur le bouton
-             * Inverse la valeur de showPassword pour afficher ou masquer le mot de passe
-             */
-              onPress={() => setShowPassword(!showPassword)}
-              style={styles.eyeIcon}
+
+            //#region Bouton Login
+            <TouchableOpacity 
+              style={styles.button} 
+              /* Fonction appelée lors du clic sur le bouton (elle nexiste pas encore) */
+              onPress={handleLogin} disabled={isLoading}
             >
-              /**
-              * Icone pour afficher/masquer le mot de passe
-              * Utilise l'icone "eye-outline" si le mot de passe est visible, "eye-off-outline" sinon
-              */
-              <Ionicons
-                name={showPassword ? "eye-outline" : "eye-off-outline"}
-                size={20}
-                color={COLORS.primary}
-              />
+              {/* Affichage d'un indicateur de chargement si isLoading est true */}
+              {isLoading ? (<ActivityIndicator color="#fff" />
+              ) : (
+                /* Affichage du texte "Login" si isLoading est false */
+                <Text style={styles.buttonText}>Login</Text>
+              )}
             </TouchableOpacity>
+            //#endregion
+            //#region Footer
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Vous n'avez pas de compte?</Text>
+              <Link href="/signup" asChild>
+                <TouchableOpacity>
+                  <Text style={styles.link}>S'inscrire</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+            //#endregion
           </View>
         </View>
-        //#region Bouton Login
-        <TouchableOpacity 
-          style={styles.button} 
-           /* Fonction appelée lors du clic sur le bouton (elle nexiste pas encore) */
-          onPress={handleLogin} disabled={isLoading}
-        >
-          {/* Affichage d'un indicateur de chargement si isLoading est true */}
-          {isLoading ? (<ActivityIndicator color="#fff" />
-          ) : (
-            /* Affichage du texte "Login" si isLoading est false */
-            <Text style={styles.buttonText}>Login</Text>
-          )}
-        </TouchableOpacity>
-        //#endregion
-        //#region Footer
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Vous n'avez pas de compte?</Text>
-          <Link href="/signup" asChild>
-            <TouchableOpacity>
-              <Text style={styles.link}>S'inscrire</Text>
-            </TouchableOpacity>
-          </Link>
-        </View>
-        //#endregion
       </View>
-    </View>
+    </KeyboardAvoidingView>
   )
 }
