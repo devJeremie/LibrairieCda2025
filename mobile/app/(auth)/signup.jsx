@@ -2,12 +2,16 @@ import {
   View, Text, 
   KeyboardAvoidingView, Platform,
   TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native'
-import { useState } from 'react';
+
 import { Ionicons } from '@expo/vector-icons';
 import styles from '../../assets/styles/signup.styles';
 import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
 export default function Signup() {
       // État pour stocker le username de l'utilisateur
@@ -20,6 +24,8 @@ export default function Signup() {
       const [showPassword, setShowPassword] = useState(false);
       // État pour gérer l'état de chargement de la page
       const [isLoading, setIsLoading] = useState(false);
+
+      const router = useRouter();
 
       // Fonction pour gérer la connexion de l'utilisateur
       const handleSignup = () => {}
@@ -96,12 +102,62 @@ export default function Signup() {
 
 
 
+
             //#region Mot de passe
-            
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Mot de passe</Text>
+              <View style={styles.inputContainer}>
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={20}
+                  color={COLORS.primary}
+                  style={styles.inputIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder='Votre mot de passe ici'
+                  placeholderTextColor={COLORS.placeholderText}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-outline' : 'eye-off-outline'} 
+                    size={20}
+                    color={COLORS.primary}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
             //#endregion
+            //#region Bouton
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSignup}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+              <ActivityIndicator color="#fff"/>
+               ) : (
+              <Text style={styles.buttonText}>Inscrivez-vous</Text>
+              )}
+            </TouchableOpacity>
+            //#endregion
+            //#region Footer
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Vous avez déjà un compte?</Text>
+              <TouchableOpacity
+                onPress={() => router.back()}
+              >
+                <Text style={styles.link}>Connexion</Text>
+              </TouchableOpacity>
+            </View>
+            //endregion
           </View>
-          
-          
         </View>
       </View>
     </KeyboardAvoidingView>
