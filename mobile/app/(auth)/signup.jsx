@@ -12,6 +12,7 @@ import COLORS from '../../constants/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useAuthStore } from '../../store/authStore';
 
 export default function Signup() {
       // État pour stocker le username de l'utilisateur
@@ -23,12 +24,18 @@ export default function Signup() {
       // État pour gérer l'affichage du mot de passe
       const [showPassword, setShowPassword] = useState(false);
       // État pour gérer l'état de chargement de la page
-      const [isLoading, setIsLoading] = useState(false);
+      const [user ,isLoading, register] = useAuthStore();
 
       const router = useRouter();
 
       // Fonction pour gérer la connexion de l'utilisateur
-      const handleSignup = () => {}
+      // Cette fonction est appelée lorsque l'utilisateur clique sur le bouton d'inscription
+      const handleSignup = async () => {
+        // Appel de la fonction d'inscription avec les informations de l'utilisateur
+        const result = await register(username, email, password);
+        // Vérification du résultat de l'inscription
+        if (!result.success) Alert.alert("Error", result.error);
+      };
 
   return (
     <KeyboardAvoidingView
