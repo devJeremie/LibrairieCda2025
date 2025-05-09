@@ -125,7 +125,7 @@ export default function Login() {
               {isLoading ? (<ActivityIndicator color="#fff" />
               ) : (
                 /* Affichage du texte "Login" si isLoading est false */
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Connexion</Text>
               )}
             </TouchableOpacity>
             //#endregion
