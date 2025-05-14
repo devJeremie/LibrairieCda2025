@@ -45,4 +45,21 @@ export const useAuthStore = create((set) => ({
             return { success: false, error: error.message };
         }
     },
+    // Vérifie l'authentification de l'utilisateur
+    checkAuth: async () => {
+        try {
+            // Récupère le jeton d'authentification stocké dans le stockage local
+            const token = await AsyncStorage.getItem("token");
+            // Récupère les informations de l'utilisateur stockées dans le stockage local
+            const userJson = await AsyncStorage.getItem("user");
+            // Parse les informations de l'utilisateur en objet JSON
+            const user = userJson ? JSON.parse(userJson) : null;
+
+            // Met à jour l'état de l'application avec les informations d'authentification
+            set({ token, user });
+            // Gère les erreurs qui pourraient survenir lors de la vérification de l'authentification
+        } catch (error) {
+            console.log("Authentification check echoué", error);
+        }
+    },
 }));
