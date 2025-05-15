@@ -12,6 +12,8 @@ import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../../constants/colors';
 
+import { useAuthStore } from "../../store/authStore";
+
 export default function Login() {
     // État pour stocker l'adresse e-mail de l'utilisateur
     const [email, setEmail] = useState("");
@@ -20,10 +22,14 @@ export default function Login() {
     // État pour gérer l'affichage du mot de passe
     const [showPassword, setShowPassword] = useState(false);
     // État pour gérer l'état de chargement de la page
-    const [isLoading, setIsLoading] = useState(false);
+    const { user, isLoading, login } = useAuthStore();
 
      // Fonction pour gérer la connexion de l'utilisateur
-    const handleLogin = () => {}
+    const handleLogin = async () => {
+      const result = await login(email, password);
+
+      if (!result.success) Alert.alert("Erreur", result.error);
+    };
 
   // Retourne le composant JSX pour la page de connexion
   return (

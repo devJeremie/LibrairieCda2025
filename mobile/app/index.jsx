@@ -1,7 +1,8 @@
 import { Link } from "expo-router";
 import { 
   Text, View,
-  StyleSheet, 
+  StyleSheet,
+  TouchableOpacity, 
 } from "react-native";
 import { useAuthStore } from "../store/authStore"
 import { useEffect } from "react";
@@ -9,7 +10,7 @@ import { useEffect } from "react";
 export default function Index() {
   // Récupération des informations de l'utilisateur et du token d'authentification
   // à partir du store d'authentification
-  const {user, token, checkAuth}= useAuthStore()
+  const {user, token, checkAuth, logout}= useAuthStore()
 
   console.log(user, token);
   // Utilisation de l'hook useEffect pour exécuter la fonction checkAuth
@@ -21,6 +22,10 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text style ={styles.title}>Bonjour {user?.username}</Text>
+
+      <TouchableOpacity onPress={logout}>
+        <Text>Déconnexion</Text>
+      </TouchableOpacity>
 
       <Link href="/(auth)">Connexion</Link>
       <Link href="/(auth)/signup">Inscription</Link>
