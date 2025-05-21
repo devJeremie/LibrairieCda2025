@@ -4,7 +4,7 @@ import React from 'react'
 export default function Profile() {
   return (
     <View>
-      <Text>Onglet profile</Text>
+      <Text>Onglet profil</Text>
     </View>
   )
 }

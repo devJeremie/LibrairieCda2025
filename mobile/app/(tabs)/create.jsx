@@ -4,7 +4,7 @@ import React from 'react'
 export default function Create() {
   return (
     <View>
-      <Text>Onglet create</Text>
+      <Text>Onglet créer</Text>
     </View>
   )
 }
