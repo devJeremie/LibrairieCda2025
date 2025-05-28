@@ -39,6 +39,7 @@ export default function RootLayout() {
     else if(isSignedIn && inAuthScreen) router.replace("/(tabs)");
   }, [user, token, segments]); // Dépendances : utilisateur, token et segments de l'URL
 
+ //SafeScreen peut creer un warning de montage on peut l'enlever si besoin
   return (
     <SafeAreaProvider>
       <SafeScreen>
