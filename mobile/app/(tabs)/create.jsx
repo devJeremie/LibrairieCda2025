@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native'
+import { View, Text } from 'react-native';
+import { useState } from "react";
 
 export default function Create() {
   const [title, setTitle] = useState("");
