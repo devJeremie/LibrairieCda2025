@@ -145,7 +145,10 @@ export default function Create() {
                 )}
               </TouchableOpacity>
             </View>
-            
+              {/*Description*/}
+            <View>
+              
+            </View>
           </View>
         </View>
       </ScrollView>
