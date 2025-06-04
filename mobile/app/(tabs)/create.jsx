@@ -2,13 +2,16 @@ import { View, Text,
   KeyboardAvoidingView, Platform,
   ScrollView, TextInput,
   TouchableOpacity, Alert,
-Image, } 
+  Image,
+ActivityIndicator, } 
 from 'react-native';
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import styles from "../../assets/styles/create.styles";
 import COLORS from '../../constants/colors';
 import { Ionicons} from "@expo/vector-icons"
+import { useAuthStore } from "../../store/authStore";
+
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -22,6 +25,9 @@ export default function Create() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  /* Récupérer le token de connexion stocké dans le stockage local (AsyncStorage)
+  * sous la clé "token"*/
+  const {token} = useAuthStore();
 
   const pickImage = async () => {
     try {
@@ -61,8 +67,32 @@ export default function Create() {
     }
   };
   const handleSubmit = async () => {
+    if (!title || !caption || !imageBase64 || !rating) {
+      Alert.alert("Error", "Veuillez remplir tout les champs");
+      return;
+    }
+    try {
+      /* Définir l'état de chargement sur true pour indiquer que 
+      l'application est en train de charger*/
+    setLoading(true);
+      // Découpe l'URL de l'image en un tableau de parties en utilisant le point (.) comme séparateur
+      const uriParts = image.split(".");
+      // Extrait l'extension de fichier à partir de la dernière partie de l'URL
+      const fileType = uriParts[uriParts.length - 1];
+      // Détermine le type MIME de l'image en fonction de l'extension de fichier
+      // Si l'extension de fichier n'est pas vide, utilise-la pour construire le type MIME
+      // Sinon, utilise la valeur par défaut "image/jpeg"
+      const imageType = fileType ? `ìmage/${fileType.toLowerCase()}` : "image/jpeg";
+    // Construit une URL de données pour l'image en utilisant le 
+    // type MIME déterminé et les données d'image encodées en base64
+    const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
 
-  }
+    fetch
+    
+    } catch (error) {
+      
+    }
+  };
   /*Cette fonction crée un composant de sélection de notation avec 5 étoiles.
  * L'utilisateur peut sélectionner une note en cliquant sur une étoile.*/
   const renderRatingPicker = () => {
@@ -85,7 +115,7 @@ export default function Create() {
     }
     // Retourne le composant de sélection de notation
     return <View style={styles.ratingContainer}>{stars}</View>
-  }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -145,10 +175,34 @@ export default function Create() {
                 )}
               </TouchableOpacity>
             </View>
-              {/*Description*/}
-            <View>
-              
+            {/*Description*/}
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                style={styles.textArea}
+                placeholder='Ecrivez votre avis sur ce livre...'
+                placeholderTextColor={COLORS.placeholderText}
+                value={caption}
+                onChangeText={setCaption}
+                multiline
+              />
             </View>
+            {/*Submit*/}
+            <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+                {loading ? (
+                  <ActivityIndicator color={COLORS.white} />
+                ) : (
+                  <>
+                    <Ionicons
+                      name='cloud-upload-outline'
+                      size={20}
+                      color={COLORS.white}
+                      style={styles.buttonIcon}
+                    />
+                    <Text style={styles.buttonText}>Partager</Text>
+                  </>
+                )}
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
