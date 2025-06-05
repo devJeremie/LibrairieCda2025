@@ -15,6 +15,7 @@ import { useAuthStore } from "../../store/authStore";
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
+import { API_URL } from '../../constants/api';
 
 export default function Create() {
   const [title, setTitle] = useState("");
@@ -87,10 +88,54 @@ export default function Create() {
     // type MIME déterminé et les données d'image encodées en base64
     const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
 
-    fetch
+    // Envoie une requête HTTP POST à l'API pour créer un nouveau livre
+    const response = await fetch(`${API_URL}/books`, {
+      // Spécifie la méthode HTTP à utiliser (dans ce cas, POST)
+      method: "POST",
+      // Définit les en-têtes de la requête
+      headers: {
+        // Inclut le token d'authentification dans l'en-tête Authorization
+        Authorization: `Bearer ${token}`,
+        // Spécifie le type de contenu de la requête (dans ce cas, JSON)
+        "Content-Type": "application/json",
+      },
+      // Convertit les données à envoyer en JSON et les inclut dans le corps de la requête
+      body: JSON.stringify({
+        // Titre du livre
+        title,
+        // Description du livre
+        caption,
+        // Note du livre (convertie en chaîne de caractères)
+        rating: rating.toString(),
+        // URL de l'image du livre
+        image: imageDataUrl,
+      }),
+    });
+
+    // Attend la réponse de l'API et la convertit en JSON
+    const data = await response.json();
+    // Vérifie si la réponse de l'API est réussie, sinon lance une erreur
+    if (!response.ok) throw new Error(data.message || "Quelque chose c'est mal passé");
+
+    // Affiche une alerte de succès pour informer l'utilisateur que la recommandation a été postée
+    Alert.alert("Success", "Votre recommandation du livre à été posté");
+    // Réinitialise les champs de formulaire pour une nouvelle saisie
+    setTitle("");
+    setCaption("");
+    setRating(3);
+    setImage(null);
+    setImageBase64(null);
+    // Redirige l'utilisateur vers la page d'accueil
+    router.push("/");
     
     } catch (error) {
-      
+       // Logue l'erreur dans la console pour débogage
+      console.error("Erreur dans la création du post:", error);
+      // Affiche une alerte d'erreur pour informer l'utilisateur de l'échec
+      Alert.alert("Error", error.message || "Quelque chose c'est mal passé");
+    }finally {
+      // Réinitialise l'état de chargement pour permettre de nouvelles actions
+      setLoading(false);
     }
   };
   /*Cette fonction crée un composant de sélection de notation avec 5 étoiles.
