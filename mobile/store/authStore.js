@@ -15,7 +15,8 @@ export const useAuthStore = create((set) => ({
         set({ isLoading: true });
         try {
             // Envoi d'une requête POST à l'API d'inscription
-            const response = await fetch(`${API_URL}/api/auth/register`,{
+            //peut etre devra t'on enlever le /api
+            const response = await fetch(`${API_URL}/auth/register`,{
         method: "POST",
             headers: {
             "Content-Type": "application/json",
@@ -47,12 +48,13 @@ return { success: true };
     }, //#endregion
 //#region Login
 // Fonction de login
-login: async (email, password) => {
+    login: async (email, password) => {
     // Définir l'état de chargement sur true
     set({ isLoading: true });
     try {
         // Envoyer une requête POST à l'API pour se connecter
-        const response = await fetch(`${API_URL}/api/auth/login`,{
+        //peut etre devra t'on enlever le /api
+        const response = await fetch(`${API_URL}/auth/login`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

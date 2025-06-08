@@ -18,7 +18,15 @@ router.post("/", protectRoute, async (req,res) => {
        }
 
        //Charge les images de cloudinary
-       const uploadResponse = await cloudinary.uploader.upload(image);
+       const uploadResponse = await cloudinary.uploader.upload(image, {
+         public_id: `img_${Date.now()}`,
+  resource_type: 'image'
+       });
+       //const uploadResponse = await cloudinary.uploader.upload(image, {
+        //use_filename: true,
+       // });
+
+
        const imageUrl = uploadResponse.secure_url
 
        // Création d'un nouveau livre avec les données récupérées
