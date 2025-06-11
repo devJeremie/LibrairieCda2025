@@ -17,26 +17,19 @@ router.post("/", protectRoute, async (req,res) => {
         return res.status(400).json({ message: "Veuillez fournir tous les champs"});
        }
 
-       //Charge les images de cloudinary
-       const uploadResponse = await cloudinary.uploader.upload(image, {
-         public_id: `img_${Date.now()}`,
-  resource_type: 'image'
-       });
-       //const uploadResponse = await cloudinary.uploader.upload(image, {
-        //use_filename: true,
-       // });
+        //Charge les images de cloudinary
+        const uploadResponse = await cloudinary.uploader.upload(image);
 
-
-       const imageUrl = uploadResponse.secure_url
+        const imageUrl = uploadResponse.secure_url
 
        // Création d'un nouveau livre avec les données récupérées
-       const newBook = new Book({
-        title,
-        caption,
-        rating,
-        image: imageUrl,
-        user: req.user._id,
-       });
+        const newBook = new Book({
+            title,
+            caption,
+            rating,
+            image: imageUrl,
+            user: req.user._id,
+        });
        // Enregistrement du livre en base de données
        await newBook.save()
         // Retour du livre créé avec un code de statut 201

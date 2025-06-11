@@ -12,6 +12,7 @@ import COLORS from '../../constants/colors';
 import { Ionicons} from "@expo/vector-icons"
 import { useAuthStore } from "../../store/authStore";
 
+import ImageResizer from 'react-native-image-resizer';
 
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -57,8 +58,9 @@ export default function Create() {
           setImageBase64(result.assets[0].base64);
         } else {
           const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-              encoding: FileSystem.EncodigType.Base64,
+              encoding: FileSystem.EncodingType.Base64,
           });
+
           setImageBase64(base64); //mise a jour 
         }
       }
@@ -83,7 +85,7 @@ export default function Create() {
       // Détermine le type MIME de l'image en fonction de l'extension de fichier
       // Si l'extension de fichier n'est pas vide, utilise-la pour construire le type MIME
       // Sinon, utilise la valeur par défaut "image/jpeg"
-      const imageType = fileType ? `ìmage/${fileType.toLowerCase()}` : "image/jpeg";
+      const imageType = fileType ? `image/${fileType.toLowerCase()}` : "image/jpeg";
     // Construit une URL de données pour l'image en utilisant le 
     // type MIME déterminé et les données d'image encodées en base64
     const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
@@ -96,8 +98,9 @@ export default function Create() {
       headers: {
         // Inclut le token d'authentification dans l'en-tête Authorization
         Authorization: `Bearer ${token}`,
-        // Spécifie le type de contenu de la requête (dans ce cas, JSON)
+         // Spécifie le type de contenu de la requête (dans ce cas, JSON)
         "Content-Type": "application/json",
+        
       },
       // Convertit les données à envoyer en JSON et les inclut dans le corps de la requête
       body: JSON.stringify({
@@ -111,7 +114,9 @@ export default function Create() {
         image: imageDataUrl,
       }),
     });
-
+    console.log(response);
+    const text = await response.text();
+console.log(text);
     // Attend la réponse de l'API et la convertit en JSON
     const data = await response.json();
     // Vérifie si la réponse de l'API est réussie, sinon lance une erreur
