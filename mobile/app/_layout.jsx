@@ -1,4 +1,4 @@
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, Slot, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SafeScreen from "../components/SafeScreen";
 import { StatusBar } from "react-native";
@@ -26,6 +26,9 @@ export default function RootLayout() {
 
   // Effet qui gère la redirection en fonction de l'authentification et de l'URL actuelle
   useEffect(() => {
+    // Si les segments sont vides, ne rien faire
+    // Vérification si les segments de l'URL sont définis et non vides
+     if (!segments || segments.length === 0) return;
     // Vérification si l'on est sur la page d'authentification
     const inAuthScreen = segments[0] === "(auth)";
     // Vérification si l'utilisateur est connecté (présence de token et d'utilisateur)
@@ -47,6 +50,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="(auth)" />
         </Stack>
+        {/* <Slot /> */}
       </SafeScreen>
       <StatusBar style="dark"/>
     </SafeAreaProvider>

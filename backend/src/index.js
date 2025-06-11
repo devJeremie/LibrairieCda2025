@@ -16,7 +16,9 @@ const PORT = process.env.PORT || 3000;
 // Définition du middleware pour parser les requêtes HTTP en JSON
 job.start();
 //app.use(express.json());
-app.use(express.json({ limit: '10mb' }));
+//création d'un middleware pour parser les requêtes JSON avec une limite de taille de 10 Mo
+app.use(express.json({ limit: '10mb' })); 
+// Définition du middleware pour parser les requêtes HTTP avec des données encodées en URL
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors());
 

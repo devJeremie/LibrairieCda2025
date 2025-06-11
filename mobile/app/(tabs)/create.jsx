@@ -90,6 +90,7 @@ export default function Create() {
     // type MIME déterminé et les données d'image encodées en base64
     const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
 
+    console.log("token utilisé: ", token);
     // Envoie une requête HTTP POST à l'API pour créer un nouveau livre
     const response = await fetch(`${API_URL}/books`, {
       // Spécifie la méthode HTTP à utiliser (dans ce cas, POST)
@@ -115,8 +116,8 @@ export default function Create() {
       }),
     });
     console.log(response);
-    const text = await response.text();
-console.log(text);
+    // const text = await response.text();
+    // console.log(text);
     // Attend la réponse de l'API et la convertit en JSON
     const data = await response.json();
     // Vérifie si la réponse de l'API est réussie, sinon lance une erreur
