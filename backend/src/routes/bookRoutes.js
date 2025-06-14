@@ -56,7 +56,7 @@ router.get("/", protectRoute, async (req,res) => {
     try {
          // Récupération des paramètres de pagination
         const page = req.query.page || 1;// Numéro de page par défaut : 1
-        const limit = req.query.limit || 5;// Nombre de livres par page par défaut : 5
+        const limit = req.query.limit || 2;// Nombre de livres par page par défaut : 2
         const skip = (page - 1) * limit; // Calcul du nombre de livres à sauter
 
         // Recherche des livres dans la base de données

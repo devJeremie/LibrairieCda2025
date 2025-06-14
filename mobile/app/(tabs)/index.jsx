@@ -8,6 +8,7 @@ import { Ionicons} from "@expo/vector-icons"
 import { useAuthStore } from '../../store/authStore'
 import { useState } from "react";
 import { useEffect } from "react";
+import COLORS from '../../constants/colors';
 import styles from '../../assets/styles/home.styles';
 import { API_URL } from '../../constants/api';
 import { formatPublishDate } from '../../lib/utils';
@@ -42,7 +43,7 @@ export default function Home() {
       else if ( pageNum === 1 ) setLoading(true);
 
       // Appel à l'API pour récupérer les livres avec pagination (5 livres par page)
-      const response = await fetch(`${API_URL}/books?page=${pageNum}&limit=5`, {
+      const response = await fetch(`${API_URL}/books?page=${pageNum}&limit=2`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -52,7 +53,20 @@ export default function Home() {
       if (!response.ok) throw new Error(data.message || 'Echec du fetch des livres');
 
       //On ajoute les nouveaux livres à la liste existante
-      setBooks(prevBooks => [...prevBooks, ...data.books]);
+      // setBooks(prevBooks => [...prevBooks, ...data.books]);
+
+      // On crée une liste de livres sans doublons
+      // Si c'est un rafraîchissement ou la première page, on remplace simplement la liste par les nouveaux livres
+      const uniqueBooks = 
+        refresh || pageNum === 1
+          ? data.books // Si c'est un rafraîchissement ou la première page, on remplace la liste
+          // Sinon, on fusionne l'ancienne liste et la nouvelle, puis on retire les doublons grâce à l'_id
+          : Array.from(new Set([...books, ...data.books].map((book) => book._id))).map((id) => 
+            [...books, ...data.books].find((book) => book._id === id)
+          );
+      // On met à jour la liste des livres avec la liste sans doublons
+      setBooks(uniqueBooks);
+
 
       // On met à jour l'état pour savoir s'il reste des pages à charger
       setHasMore(pageNum < data.totalPages);
@@ -75,7 +89,13 @@ export default function Home() {
   }, []);
 
   // Fonction pour charger plus de livres (pagination)
-  const handleLoadMore = async () => {};
+  const handleLoadMore = async () => {
+     // Si on a encore des livres à charger et qu'on n'est pas déjà en train de charger
+    if (hasMore && !loading && !refreshing) {
+      // On charge la page suivante
+      await fetchBooks(page + 1); 
+    }
+  };
 
     // Fonction pour afficher chaque livre dans la liste
   // item : objet représentant un livre (contenant les infos de l'utilisateur)
@@ -130,7 +150,7 @@ export default function Home() {
     }
     // Retourne le tableau d'étoiles à afficher
     return stars;
-  }
+  };
 
   // Affichage du composant principal
   // FlatList : composant pour afficher la liste des livres de façon performante
@@ -147,6 +167,23 @@ export default function Home() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+
+        onEndReached={handleLoadMore} 
+        onEndReachedThreshold={0.1} // Déclenche le chargement de plus de livres quand on atteint 10% de la fin de la liste
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Bienvenue sur BookShare</Text>
+            <Text style={styles.headerSubtitle}>Découvrez les derniers livres partagés par la communauté 👇</Text>
+          </View>
+        }
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="book-outline" size={60} color={COLORS.textSecondary} />
+            <Text style={styles.emptyText}>Aucun livre trouvé</Text>
+            <Text style={styles.emptySubtext}>Partagez votre premier livre !</Text>
+          </View>
+        }
+      
       />
     </View>
   )
