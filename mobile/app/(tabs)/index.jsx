@@ -1,9 +1,9 @@
 import { 
   View, Text,
   TouchableOpacity, FlatList,
-  ActivityIndicatorBase, 
+  ActivityIndicator, RefreshControl,
 } from 'react-native'
-import { ActivityIndicator } from 'react-native';
+import Loader from '../../components/Loader';
 
 import { Image } from 'expo-image';
 import { Ionicons} from "@expo/vector-icons"
@@ -162,18 +162,9 @@ export default function Home() {
     return stars;
   };
 
-  if (loading) 
+  if (loading) return <Loader size="large"/>
     // Si les données sont en cours de chargement, on affiche un indicateur de chargement
-    return (
-      <View style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: COLORS.background,
-      }}>
-        <ActivityIndicator size={20} color={COLORS.primary} />
-      </View>
-    );
+    
   
 
   // Affichage du composant principal
@@ -191,6 +182,14 @@ export default function Home() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchBooks(1, true)} // Rafraîchit la liste en rechargeant la première page
+            colors={[COLORS.primary]} // Couleur de l'indicateur de rafraîchissement
+            tintColor={COLORS.primary} // Couleur du cercle de chargement
+          />
+        }
 
         onEndReached={handleLoadMore} 
         onEndReachedThreshold={0.1} // Déclenche le chargement de plus de livres quand on atteint 10% de la fin de la liste
