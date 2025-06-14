@@ -1,17 +1,25 @@
 import { 
   View, Text,
-  TouchableOpacity, FlatList, 
+  TouchableOpacity, FlatList,
+  ActivityIndicatorBase, 
 } from 'react-native'
+import { ActivityIndicator } from 'react-native';
 
 import { Image } from 'expo-image';
 import { Ionicons} from "@expo/vector-icons"
 import { useAuthStore } from '../../store/authStore'
 import { useState } from "react";
 import { useEffect } from "react";
+
 import COLORS from '../../constants/colors';
 import styles from '../../assets/styles/home.styles';
 import { API_URL } from '../../constants/api';
 import { formatPublishDate } from '../../lib/utils';
+
+// Fonction utilitaire pour créer une pause (attente) asynchrone
+// ms : durée de la pause en millisecondes
+// Retourne une promesse qui se résout après le délai spécifié
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function Home() {
   // Récupère le token d'authentification depuis le store
@@ -92,6 +100,8 @@ export default function Home() {
   const handleLoadMore = async () => {
      // Si on a encore des livres à charger et qu'on n'est pas déjà en train de charger
     if (hasMore && !loading && !refreshing) {
+      // Pause de 1s pour éviter les appels trop rapides
+      await sleep(1000); 
       // On charge la page suivante
       await fetchBooks(page + 1); 
     }
@@ -152,6 +162,20 @@ export default function Home() {
     return stars;
   };
 
+  if (loading) 
+    // Si les données sont en cours de chargement, on affiche un indicateur de chargement
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.background,
+      }}>
+        <ActivityIndicator size={20} color={COLORS.primary} />
+      </View>
+    );
+  
+
   // Affichage du composant principal
   // FlatList : composant pour afficher la liste des livres de façon performante
   // - data : données à afficher (ici la liste des livres)
@@ -176,6 +200,12 @@ export default function Home() {
             <Text style={styles.headerSubtitle}>Découvrez les derniers livres partagés par la communauté 👇</Text>
           </View>
         }
+        ListFooterComponent={
+          hasMore && books.length > 0 ? (
+            <ActivityIndicator style={styles.footerLoader} size="small" color={COLORS.primary} />
+          ) : null
+        }
+
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="book-outline" size={60} color={COLORS.textSecondary} />
