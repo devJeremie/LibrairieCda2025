@@ -56,12 +56,13 @@ router.post("/register", async (req,res) => {
         username, 
         password,
         profileImage,
+       
       })
       await user.save();
 
       const token = generateToken(user._id);
 
-      res.status(201).json({
+      res.status(200).json({
         token,
         user:{
           id: user._id,
@@ -69,6 +70,7 @@ router.post("/register", async (req,res) => {
           email: user.email,
           password: user.password,
           profileImage: user.profileImage,
+          createdAt: user.createdAt,
         },
       })
       //si ce n'est pas bon alors on aura l'erreur
@@ -112,6 +114,7 @@ router.post("/login", async (req,res) => {
           email: user.email,
           password: user.password,
           profileImage: user.profileImage,
+          createdAt: user.createdAt,
         },
       });
 

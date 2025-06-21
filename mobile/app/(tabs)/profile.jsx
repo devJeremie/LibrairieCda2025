@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { API_URL } from '../../constants/api';
 import { useAuthStore } from '../../store/authStore';
+import ProfileHeader from '../../components/ProfileHeader';
+import LogoutButton from '../../components/LogoutButton';
 
 export default function Profile() {
   // books : liste des livres de l'utilisateur
@@ -56,8 +58,10 @@ export default function Profile() {
   }, []);
 
   return (
-    <View>
-      <Text>Onglet profil</Text>
+    <View style={styles.container}>
+
+      <ProfileHeader />
+      <LogoutButton />
     </View>
   )
 }
