@@ -137,7 +137,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
             }
         }
         // Suppression du livre de la base de données
-        await book.deletOne();
+        await book.deleteOne();
         // Envoi d'une réponse de succès
         res.json({ message: "Le livre a été supprimé avec succès" });
     } catch (error) {
