@@ -46,6 +46,11 @@ return { success: true };
     return { success: false, error: error.message };
 }
     }, //#endregion
+
+
+
+
+
 //#region Login
 // Fonction de login
     login: async (email, password) => {
@@ -84,6 +89,10 @@ return { success: true };
     }
 },
     //#endregion
+
+
+
+
     //#region Authentification
     // Vérifie l'authentification de l'utilisateur
     checkAuth: async () => {
@@ -102,6 +111,12 @@ return { success: true };
             console.log("Authentification check echoué", error);
         }
     }, //#endregion
+
+
+
+
+
+    
         //#region Logout
         //Fonction de déconnexion
         logout: async () => {
