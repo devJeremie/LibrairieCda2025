@@ -1,7 +1,7 @@
 import { 
   View, Text, FlatList, TouchableOpacity, 
-  Alert,
-  ActivityIndicator} from 'react-native';
+  Alert,ActivityIndicator
+} from 'react-native';
 import styles from '../../assets/styles/profile.styles';
 import { Image } from 'expo-image';
 
