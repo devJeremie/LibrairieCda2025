@@ -26,13 +26,13 @@ const userSchema = new mongoose.Schema({
 },{ timestamps: true});
 
 //Hash du password avant sauvegarde en Bdd
-userSchema.pre('save', async function(next) {
-    if(!this.isModified("password")) return next();
+userSchema.pre('save', async function(next) {         //onpeut sortir next
+    if(!this.isModified("password")) return next();   //ici aussi on peut sortir next
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 
-    next();
+    next(); //et donc on sort next ici aussi
 });
 
 //Comparaison du mot de passe
