@@ -20,7 +20,7 @@ job.start();
 app.use(express.json({ limit: '10mb' })); 
 // Définition du middleware pour parser les requêtes HTTP avec des données encodées en URL
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cors());
+app.use( cors());
 
 //Définition des routes
 app.use("/api/auth", authRoutes);
