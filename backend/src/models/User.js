@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function(next) {         //on peut sortir next
     if(!this.isModified("password")) return next();   //ici aussi on peut sortir next
 
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10); //le 10 correspond au calcul de bcrypt pour le hashage (2puissance10) convention entre performance et sécurité
     this.password = await bcrypt.hash(this.password, salt);
 
     next(); //et donc on sort next ici aussi
