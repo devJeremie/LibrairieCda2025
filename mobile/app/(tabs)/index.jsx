@@ -8,8 +8,7 @@ import Loader from '../../components/Loader';
 import { Image } from 'expo-image';
 import { Ionicons} from "@expo/vector-icons"
 import { useAuthStore } from '../../store/authStore'
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState,  useEffect } from "react";
 
 import COLORS from '../../constants/colors';
 import styles from '../../assets/styles/home.styles';
@@ -19,7 +18,7 @@ import { formatPublishDate } from '../../lib/utils';
 // Fonction utilitaire pour créer une pause (attente) asynchrone
 // ms : durée de la pause en millisecondes
 // Retourne une promesse qui se résout après le délai spécifié
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default function Home() {
   // Récupère le token d'authentification depuis le store

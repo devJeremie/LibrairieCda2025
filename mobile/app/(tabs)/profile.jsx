@@ -1,6 +1,7 @@
 import { 
   View, Text, FlatList, TouchableOpacity, 
-  Alert,ActivityIndicator
+  Alert,ActivityIndicator,
+  RefreshControl
 } from 'react-native';
 import styles from '../../assets/styles/profile.styles';
 import { Image } from 'expo-image';
@@ -13,6 +14,8 @@ import ProfileHeader from '../../components/ProfileHeader';
 import LogoutButton from '../../components/LogoutButton';
 import COLORS from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { sleep } from ".";
+import Loader from '../../components/Loader';
 
 export default function Profile() {
   // books : liste des livres de l'utilisateur
@@ -136,6 +139,19 @@ export default function Profile() {
     }
     return stars;
   };
+/**
+ * Gère le rafraîchissement des données avec un indicateur de chargement.
+ * Met à jour l'état de rafraîchissement, appelle fetchData() pour recharger les données,
+ * puis réinitialise l'état une fois terminé.
+ */
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await sleep(500); // Simule un délai pour l'effet de rafraîchissement
+    await fetchData();
+    setRefreshing(false);
+  };
+
+  if(isLoading && !refreshing) return <Loader />;
 
   return (
     <View style={styles.container}>
@@ -160,6 +176,14 @@ export default function Profile() {
         showsVerticalScrollIndicator={false}
          // contentContainerStyle : applique un style personnalisé au conteneur de la liste
         contentContainerStyle={styles.booksList}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[COLORS.primary]}
+            tintColor={COLORS.primary}
+          />
+        }
         // ListEmptyComponent : composant affiché si la liste des livres est vide
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
