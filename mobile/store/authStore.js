@@ -8,6 +8,7 @@ export const useAuthStore = create((set) => ({
     user: null, // Utilisateur actuellement connecté
     token: null, // Jeton d'authentification
     isLoading: false, // Jeton d'authentification
+    isCheckingAuth: true, // Indicateur de vérification de l'authentification
     //#region Register
     // Fonction d'inscription 
     register: async (username, email, password) => {
@@ -109,6 +110,9 @@ return { success: true };
             // Gère les erreurs qui pourraient survenir lors de la vérification de l'authentification
         } catch (error) {
             console.log("Authentification check echoué", error);
+        } finally {
+            // Indique que la vérification de l'authentification est terminée
+            set({ isCheckingAuth: false });
         }
     }, //#endregion
 
@@ -117,14 +121,14 @@ return { success: true };
 
 
     
-        //#region Logout
-        //Fonction de déconnexion
-        logout: async () => {
-            // Supprimer le jeton d'authentification du stockage local
-            await AsyncStorage.removeItem("token");
-            // Supprimer les informations de l'utilisateur du stockage local
-            await AsyncStorage.removeItem("user");
-            // Réinitialiser les valeurs de l'utilisateur et du jeton dans le store
-            set({ token: null, user: null });
-        },//#endregion
+    //#region Logout
+    //Fonction de déconnexion
+    logout: async () => {
+        // Supprimer le jeton d'authentification du stockage local
+        await AsyncStorage.removeItem("token");
+        // Supprimer les informations de l'utilisateur du stockage local
+        await AsyncStorage.removeItem("user");
+        // Réinitialiser les valeurs de l'utilisateur et du jeton dans le store
+        set({ token: null, user: null });
+    },//#endregion
 }));

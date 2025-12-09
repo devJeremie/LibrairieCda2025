@@ -22,7 +22,7 @@ export default function Login() {
     // État pour gérer l'affichage du mot de passe
     const [showPassword, setShowPassword] = useState(false);
     // État pour gérer l'état de chargement de la page
-    const { user, isLoading, login } = useAuthStore();
+    const { isCheckingAuth, isLoading, login } = useAuthStore();
 
      // Fonction pour gérer la connexion de l'utilisateur
     const handleLogin = async () => {
@@ -30,6 +30,8 @@ export default function Login() {
 
       if (!result.success) Alert.alert("Erreur", result.error);
     };
+
+    if (isCheckingAuth) return null;
 
   // Retourne le composant JSX pour la page de connexion
   return (
