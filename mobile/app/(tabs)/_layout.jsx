@@ -7,7 +7,7 @@ export default function Tablayout() {
   // Utilisation de hook useSafeAreaInsets pour 
   // récupérer les informations de zone de sécurité de l'écran
   // La zone de sécurité est la zone de l'écran qui n'est pas
-  //  couverte par les éléments de l'interface utilisateur 
+  // couverte par les éléments de l'interface utilisateur 
   // tels que la barre de navigation ou la barre de statut
   const insets = useSafeAreaInsets();
 
