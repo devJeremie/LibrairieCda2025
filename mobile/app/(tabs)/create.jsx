@@ -54,9 +54,14 @@ export default function Create() {
         console.log("Résultat ici: ", result);
         setImage(result.assets[0].uri); // Met à jour l'état de l'image avec l'URI de l'image 
          
+        // Si l'image sélectionnée contient déjà une version encodée en base64,
+        // on la récupère directement depuis result.assets[0].base64 et on la stocke dans l'état.
         if(result.assets[0].base64) {
           setImageBase64(result.assets[0].base64);
         } else {
+          // Sinon, on lit le fichier image à partir de son URI
+          // et on le convertit manuellement en base64 grâce à FileSystem,
+          // puis on pourra utiliser cette chaîne base64 comme fallback.
           const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, {
               encoding: FileSystem.EncodingType.Base64,
           });
